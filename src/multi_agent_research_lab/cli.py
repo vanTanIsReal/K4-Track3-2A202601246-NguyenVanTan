@@ -1,5 +1,6 @@
 """Command-line entrypoint for the lab."""
 
+import os
 import sys
 from typing import Annotated
 
@@ -35,6 +36,10 @@ console = Console(highlight=False)
 def _init() -> None:
     settings = get_settings()
     configure_logging(settings.log_level)
+    if settings.langsmith_api_key:
+        os.environ["LANGCHAIN_TRACING_V2"] = "true"
+        os.environ["LANGCHAIN_API_KEY"] = settings.langsmith_api_key
+        os.environ["LANGCHAIN_PROJECT"] = settings.langsmith_project
 
 
 def _parse_query(query: str) -> ResearchQuery:
